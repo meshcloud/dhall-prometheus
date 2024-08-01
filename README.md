@@ -45,12 +45,24 @@ in  Prometheus.Config::{
           ]
         }
       , Prometheus.ScrapeConfig::{
+        , job_name = Some "federate"
+        , honor_labels = Some True
+        , metrics_path = Some "/federate"
+        , params = Some
+          [ { mapKey = "match[]"
+            , mapValue = [ "{job='prometheus'}", "{__name__=~'job:.*'}" ]
+            }
+          ]
+        , static_configs = Some
+          [ Prometheus.StaticConfig::{ targets = Some host_list } ]
+        }
+      , Prometheus.ScrapeConfig::{
         , job_name = Some "blackbox"
         , static_configs = Some
           [ Prometheus.StaticConfig::{ targets = Some web_monitor_list } ]
         , scrape_interval = Some "5m"
         , metrics_path = Some "/probe"
-        , params = Some Prometheus.Params::{ module = Some [ "http_2xx" ] }
+        , params = Some [ { mapKey = "module", mapValue = [ "http_2xx" ] } ]
         , relabel_configs = Some
           [ Prometheus.RelabelConfig::{
             , source_labels = Some [ "__address__" ]
@@ -90,6 +102,18 @@ scrape_configs:
       - labels:
           severity: critical
         targets:
+          - bridge:9100
+          - zuul:9100
+          - nodepool:9100
+  - honor_labels: true
+    job_name: federate
+    metrics_path: /federate
+    params:
+      "match[]":
+        - "{job='prometheus'}"
+        - "{__name__=~'job:.*'}"
+    static_configs:
+      - targets:
           - bridge:9100
           - zuul:9100
           - nodepool:9100

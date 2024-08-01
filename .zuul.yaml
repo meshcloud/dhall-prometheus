@@ -2,5 +2,6 @@
     check: &jobs
       jobs:
         - shake-factory-test
-        - shake-factory-docs
+        # The job (or the image) needs to install dhall-docs
+        # - shake-factory-docs
     gate: *jobs
