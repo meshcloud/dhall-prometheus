@@ -7,9 +7,6 @@ let severity
     : Text -> JSON.Type
     = \(sev : Text) -> JSON.object (toMap { severity = JSON.string sev })
 
-let mapText
-    : List { mapKey : Text, mapValue : Text } -> JSON.Type
-    = https://raw.githubusercontent.com/softwarefactory-project/dhall-zuul/0.2.0/Zuul/Vars/mapText.dhall
-        sha256:66a4ca966e805ff1da369041bde29b4d850700d61ab00f1ce182d95bb07c88f1
+let mapText = ./Vars/mapText.dhall
 
 in  { Type = JSON.Type, severity, mapText }
